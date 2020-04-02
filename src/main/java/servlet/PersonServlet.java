@@ -14,10 +14,10 @@ import java.io.PrintWriter;
 
 public class PersonServlet extends HttpServlet {
 
+    public static final PersonService PERSON_SERVICE = new PersonServiceImpl();
+
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
-        PersonService personService = new PersonServiceImpl();
 
         PrintWriter writer = resp.getWriter();
 
@@ -25,22 +25,30 @@ public class PersonServlet extends HttpServlet {
         String password = req.getParameter("password");
         String gender = req.getParameter("gender");
 
+        String message = " Person already exists ";
 
-        if (personService.isPersonExists(name)) {//без else
-            Person person = new Person();
-            person.setName(name);
-            person.setPassword(password);
-            person.setGender(Gender.valueOf(gender));
-            personService.savePerson(person);
-            writer.println("Person with Name " + name + " with password " + password + " was register");
-        } else {
-            writer.println(" Person already exists ");
+        if (!PERSON_SERVICE.isPersonExists(name)) {
+            Gender gender1 = Gender.valueOf(gender);
+            Person person = new Person(name, password, gender1);
+            PERSON_SERVICE.savePerson(person);
+            message = "Person with Name " + name + " with password " + password + " was register";
         }
 
+        writer.println(message);
 
 
-        personService.findAllPerson();
 
+        PERSON_SERVICE.findAllPerson();
+
+        /*BufferedReader reader = req.getReader();
+
+        Gson gson = new Gson();
+
+        Person person = gson.fromJson(reader, Person.class);
+
+        PrintWriter writer = resp.getWriter();
+
+        writer.println("Person with Name " + person.getName() + " with password " + person.getPassword() + " was register");*/
 
     }
 }

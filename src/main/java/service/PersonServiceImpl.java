@@ -13,15 +13,15 @@ public class PersonServiceImpl implements PersonService {
         personList = new ArrayList<>();
     }
 
-    public boolean isPersonExists(String name) {//лямда
-        for (Person p : personList) {
+    public boolean isPersonExists(String name) {
+   /*     for (Person p : personList) {
             if (p.getName().equals(name)) {
                 return false;
             }
         }
-        return true;
+        return true;*/
 
-       // personList.forEach(p -> {if (p.getName().equals(name))}; );
+       return personList.stream().anyMatch(p -> p.getName().equals(name));
     }
 
     public void savePerson(Person person) {
